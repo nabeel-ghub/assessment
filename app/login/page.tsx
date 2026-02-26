@@ -37,7 +37,7 @@ export default function Login() {
         <div className="h-[100vh] w-[100%] bg-zinc-900 flex justify-center items-center">
             <Card className="w-[85vw] md:w-md xl:scale-[1.3]">
       <CardHeader>
-        <CardTitle>Login to todo account</CardTitle>
+        <CardTitle>Login to your ToDo account</CardTitle>
         <CardDescription>
           Enter your email below to login to your account
         </CardDescription>
