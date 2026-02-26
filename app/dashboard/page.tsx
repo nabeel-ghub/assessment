@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Todo } from "./types";
 
@@ -37,6 +37,9 @@ export default function Dashboard() {
 
   const [todoList, setTodoList] = useState<Todo[]>([]);
   const [todoListTitles, setTodoListTitles] = useState<string[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [filterStatus, setFilterStatus] = useState<string>("")
 
   useEffect(() => {
     const auth = localStorage.getItem("auth");
@@ -58,15 +61,31 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    let stringArray: string[] = []
+    let stringArray: string[] = [];
     todoList.map((t) => {
-      stringArray = [...stringArray, t.title]
-    })
+      stringArray = [...stringArray, t.title];
+    });
     setTodoListTitles(stringArray);
-    if(todoList.length <= 0) return;
-    const sortedTodo: Todo[] = todoList.sort((a, b) => b.due.getTime() - a.due.getTime())
-    setTodoList(sortedTodo)
   }, [todoList]);
+
+  const displayList = [...todoList]
+    .sort((a, b) => b.due.getTime() - a.due.getTime())
+    .filter((t) => t.title.toLowerCase().includes(searchValue.toLowerCase()))
+    .filter((t) => t.status.includes(filterStatus));
+
+  function handleSearch(item?: string) {
+    let val;
+    if(item) {
+       val = item;
+    } else {
+       val = searchRef.current?.value;
+    }
+    if(val) setSearchValue(val);
+  }
+
+  function handleFilter() {
+    
+  }
 
   return (
     <div className="min-h-[100vh] h-auto w-[100%] flex flex-col justify-center items-center bg-zinc-900">
@@ -79,6 +98,8 @@ export default function Dashboard() {
             <div className="flex">
               <Combobox items={todoListTitles}>
                 <ComboboxInput
+                  ref={searchRef}
+                  onChange={(e) => handleSearch()}
                   placeholder="Search a todo"
                   className="text-white rounded-r-[0]"
                 />
@@ -86,7 +107,7 @@ export default function Dashboard() {
                   <ComboboxEmpty>No items found.</ComboboxEmpty>
                   <ComboboxList>
                     {(item, index) => (
-                      <ComboboxItem key={index} value={item}>
+                      <ComboboxItem onClick={() => handleSearch(item)} key={index} value={item}>
                         {item}
                       </ComboboxItem>
                     )}
@@ -109,10 +130,10 @@ export default function Dashboard() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Filter by:</SelectLabel>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="todo">Todo</SelectItem>
-                  <SelectItem value="progress">In Progress</SelectItem>
-                  <SelectItem value="done">Done</SelectItem>
+                  <SelectItem onClick={() => handleFilter("")} value="all">All</SelectItem>
+                  <SelectItem onClick={() => handleFilter("todo")} value="todo">Todo</SelectItem>
+                  <SelectItem onClick={() => handleFilter("progress")} value="progress">In Progress</SelectItem>
+                  <SelectItem onClick={() => handleFilter("done")} value="done">Done</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -126,7 +147,7 @@ export default function Dashboard() {
             </FieldLabel>
           </Field>
           <div className="mt-5 h-auto w-[90%] self-center md:overflow-y-scroll">
-            {todoList.map((item, index) => (
+            {displayList.map((item, index) => (
               <TodoCard
                 key={index}
                 item={item}
