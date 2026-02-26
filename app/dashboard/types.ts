@@ -5,3 +5,5 @@ export type Todo = {
   status: "todo" | "progress" | "done";
   due: Date;
 };
+
+export type Status = "todo" | "progress" | "done";

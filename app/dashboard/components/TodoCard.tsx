@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Todo } from "../types";
+import { Status } from "../types";
 import { format } from "date-fns";
 
 //shadcn components
@@ -14,6 +15,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 
@@ -24,6 +34,9 @@ import { Input } from "@/components/ui/input";
 import { XIcon } from "lucide-react";
 import { SaveIcon } from "lucide-react";
 import { ChevronDownIcon } from "lucide-react";
+import { TimerIcon } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
+import { Check } from "lucide-react";
 
 type TodoCardProps = {
   item: Todo;
@@ -71,9 +84,6 @@ export default function ({ item, setTodoList }: TodoCardProps) {
       if (descValue && descValue.trim().length >= 0) {
         if (dueDate) {
           setTodoList((prev) => {
-            const currentTodo = prev.find((todo) => {
-              todo.id === item.id;
-            });
             const updatedItem = {
               id: item.id,
               title: titleValue,
@@ -90,6 +100,31 @@ export default function ({ item, setTodoList }: TodoCardProps) {
         }
       }
     }
+  }
+
+  function changeStatus(index: number) {
+    let newStatus: Status = "todo";
+    if(index === 1) newStatus = "todo"
+    else if(index === 2) newStatus = "progress"
+    else if(index === 3) newStatus = "done"
+
+     setTodoList((prev) => {
+            const updatedItem = {
+              id: item.id,
+              title: item.title,
+              description: item.description,
+              due: item.due,
+              status: newStatus,
+            };
+            const newList: Todo[] = prev.map((t) =>
+              t.id === item.id ? updatedItem : t,
+            );
+            return newList;
+          });
+  }
+
+  function deleteTodo() {
+    setTodoList((prev) => prev.filter((t) => t.id !== item.id))
   }
 
   return (
@@ -154,7 +189,7 @@ export default function ({ item, setTodoList }: TodoCardProps) {
         <div className="flex flex-row mt-5 justify-around">
           {isEditing ? (
             <>
-              {titleHasValue && descHasValue ? (
+              {titleHasValue && descHasValue && dueDate ? (
                 <Button
                   onClick={() => handleSave()}
                   size="sm"
@@ -184,17 +219,39 @@ export default function ({ item, setTodoList }: TodoCardProps) {
               <Edit2Icon></Edit2Icon> Edit
             </Button>
           )}
-          <Button
+           <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
             size="sm"
             variant="outline"
             className="cursor-pointer text-[12px]"
           >
             <Edit2Icon></Edit2Icon> Change Status
           </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-40" align="start">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => changeStatus(1)}>
+            todo
+            <DropdownMenuShortcut><TimerIcon></TimerIcon></DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => changeStatus(2)}>
+            progress
+            <DropdownMenuShortcut><Loader2Icon/></DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => changeStatus(3)}>
+            done
+            <DropdownMenuShortcut><Check/></DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
           <Button
             size="sm"
             variant="destructive"
             className="cursor-pointer text-[12px]"
+            onClick={() => deleteTodo()}
           >
             <Trash2Icon></Trash2Icon> Delete
           </Button>

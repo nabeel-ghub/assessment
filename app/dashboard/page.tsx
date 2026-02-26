@@ -58,9 +58,11 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    todoList.map((item) => {
-      setTodoListTitles((prev) => [...prev, item.title]);
-    });
+    let stringArray: string[] = []
+    todoList.map((t) => {
+      stringArray = [...stringArray, t.title]
+    })
+    setTodoListTitles(stringArray);
     if(todoList.length <= 0) return;
     const sortedTodo: Todo[] = todoList.sort((a, b) => b.due.getTime() - a.due.getTime())
     setTodoList(sortedTodo)
