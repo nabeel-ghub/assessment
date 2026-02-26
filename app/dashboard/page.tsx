@@ -16,7 +16,11 @@ export default function Dashboard() {
   const [todoListTitles, setTodoListTitles] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const searchRef = useRef<HTMLInputElement>(null);
-  const [filterStatus, setFilterStatus] = useState<string>("")
+  const [filterStatus, setFilterStatus] = useState<string>("");
+  const itemsPerPage = 5;
+  const [paginationCurrent, setPaginationCurrent] = useState<number>(1);
+  const [paginationStart, setPaginationStart] = useState<number>(0);
+  const [paginationEnd, setPaginationEnd] = useState<number>(0);
 
   useEffect(() => {
     const auth = localStorage.getItem("auth");
@@ -45,23 +49,27 @@ export default function Dashboard() {
     setTodoListTitles(stringArray);
   }, [todoList]);
 
+    const startIndex = ((paginationCurrent - 1) * itemsPerPage);
+    const endIndex = (startIndex + itemsPerPage);
+
   const displayList = [...todoList]
     .sort((a, b) => b.due.getTime() - a.due.getTime())
     .filter((t) => t.title.toLowerCase().includes(searchValue.toLowerCase()))
-    .filter((t) => t.status.includes(filterStatus));
+    .filter((t) => t.status.includes(filterStatus))
+    .slice(startIndex, endIndex);
 
   function handleSearch(item?: string) {
     let val;
-    if(item) {
-       val = item;
+    if (item) {
+      val = item;
     } else {
-       val = searchRef.current?.value;
+      val = searchRef.current?.value;
     }
-    if(val) setSearchValue(val);
+    if (val) setSearchValue(val);
   }
 
   function handleFilter(filter: string) {
-    setFilterStatus(filter)
+    setFilterStatus(filter);
   }
 
   return (
@@ -77,7 +85,16 @@ export default function Dashboard() {
           />
           <AddToDo setTodoList={setTodoList} />
         </section>
-        <TodoListSection displayList={displayList} setTodoList={setTodoList} />
+        <TodoListSection
+          todoList={todoList}
+          itemsPerPage={itemsPerPage}
+          paginationCurrent={paginationCurrent}
+          setPaginationCurrent={setPaginationCurrent}
+          paginationStart={paginationStart}
+          paginationEnd={paginationEnd}
+          displayList={displayList}
+          setTodoList={setTodoList}
+        />
       </div>
     </div>
   );
