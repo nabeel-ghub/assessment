@@ -66,20 +66,29 @@ export default function ({ item, setTodoList }: TodoCardProps) {
   function handleSave() {
     const titleValue = titleRef.current?.value;
     const descValue = descRef.current?.value;
-    if(!titleValue && !descValue && !dueDate) return;
-    if(titleValue && titleValue.trim().length >= 0) {
-        if(descValue && descValue.trim().length >= 0) {
-            if(dueDate) {
-                const updatedTodo: Todo = {
-                    id: item.id,
-                    title: titleValue,
-                    description: descValue,
-                    due: dueDate,
-                    status: item.status
-                }
-                setTodoList(prev => [...prev, updatedTodo]);
-            }
+    if (!titleValue && !descValue && !dueDate) return;
+    if (titleValue && titleValue.trim().length >= 0) {
+      if (descValue && descValue.trim().length >= 0) {
+        if (dueDate) {
+          setTodoList((prev) => {
+            const currentTodo = prev.find((todo) => {
+              todo.id === item.id;
+            });
+            const updatedItem = {
+              id: item.id,
+              title: titleValue,
+              description: descValue,
+              due: dueDate,
+              status: item.status,
+            };
+            const newList: Todo[] = prev.map((t) =>
+              t.id === item.id ? updatedItem : t,
+            );
+            return newList;
+          });
+          setIsEditing(false)
         }
+      }
     }
   }
 
