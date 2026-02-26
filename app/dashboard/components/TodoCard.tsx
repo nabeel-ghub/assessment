@@ -1,52 +1,30 @@
+"use client";
 import { useRef, useState } from "react";
 import { Todo } from "../types";
 import { Status } from "../types";
 import { format } from "date-fns";
-
-//shadcn components
 import {
   Card,
   CardContent,
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-
-//lucide icons
 import { Edit2Icon } from "lucide-react";
 import { Trash2Icon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { XIcon } from "lucide-react";
-import { SaveIcon } from "lucide-react";
-import { ChevronDownIcon } from "lucide-react";
-import { TimerIcon } from "lucide-react";
-import { Loader2Icon } from "lucide-react";
-import { Check } from "lucide-react";
+import TodoEditForm from "./TodoEditForm";
+import StatusDropdown from "./StatusDropdown";
+import { XIcon, SaveIcon } from "lucide-react";
 
 type TodoCardProps = {
   item: Todo;
   setTodoList: React.Dispatch<React.SetStateAction<Todo[]>>;
 };
 
-export default function ({ item, setTodoList }: TodoCardProps) {
+export default function TodoCard({ item, setTodoList }: TodoCardProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const titleRef = useRef<HTMLInputElement | null>(null);
-  const descRef = useRef<HTMLInputElement | null>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const descRef = useRef<HTMLInputElement>(null);
   const [titleHasValue, setTitleHasValue] = useState<boolean>(false);
   const [descHasValue, setDescHasValue] = useState<boolean>(false);
   const [dueDate, setDueDate] = useState<Date>();
@@ -55,7 +33,14 @@ export default function ({ item, setTodoList }: TodoCardProps) {
     setTitleHasValue(true);
     setDescHasValue(true);
     setDueDate(item.due);
-    setIsEditing((prev) => !prev);
+    setIsEditing(true);
+  }
+
+  function handleCancel() {
+    setIsEditing(false);
+    setTitleHasValue(false);
+    setDescHasValue(false);
+    setDueDate(item.due);
   }
 
   function handleTitle() {
@@ -96,7 +81,7 @@ export default function ({ item, setTodoList }: TodoCardProps) {
             );
             return newList;
           });
-          setIsEditing(false)
+          setIsEditing(false);
         }
       }
     }
@@ -104,27 +89,27 @@ export default function ({ item, setTodoList }: TodoCardProps) {
 
   function changeStatus(index: number) {
     let newStatus: Status = "todo";
-    if(index === 1) newStatus = "todo"
-    else if(index === 2) newStatus = "progress"
-    else if(index === 3) newStatus = "done"
+    if (index === 1) newStatus = "todo";
+    else if (index === 2) newStatus = "progress";
+    else if (index === 3) newStatus = "done";
 
-     setTodoList((prev) => {
-            const updatedItem = {
-              id: item.id,
-              title: item.title,
-              description: item.description,
-              due: item.due,
-              status: newStatus,
-            };
-            const newList: Todo[] = prev.map((t) =>
-              t.id === item.id ? updatedItem : t,
-            );
-            return newList;
-          });
+    setTodoList((prev) => {
+      const updatedItem = {
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        due: item.due,
+        status: newStatus,
+      };
+      const newList: Todo[] = prev.map((t) =>
+        t.id === item.id ? updatedItem : t,
+      );
+      return newList;
+    });
   }
 
   function deleteTodo() {
-    setTodoList((prev) => prev.filter((t) => t.id !== item.id))
+    setTodoList((prev) => prev.filter((t) => t.id !== item.id));
   }
 
   return (
@@ -132,40 +117,15 @@ export default function ({ item, setTodoList }: TodoCardProps) {
       <CardContent>
         {isEditing ? (
           <>
-            <Input
-              ref={titleRef}
-              onChange={() => handleTitle()}
-              className="mb-2"
-              placeholder="Enter title"
-              defaultValue={item.title}
-            ></Input>
-            <Input
-              ref={descRef}
-              onChange={() => handleDesc()}
-              className="mb-2"
-              placeholder="Enter description"
-              defaultValue={item.description}
-            ></Input>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  data-empty={!dueDate}
-                  className="data-[empty=true]:text-muted-foreground justify-between text-left font-normal cursor-pointer"
-                >
-                  {dueDate ? format(dueDate, "PPP") : <span>Due date</span>}
-                  <ChevronDownIcon />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dueDate}
-                  onSelect={setDueDate}
-                  defaultMonth={dueDate}
-                />
-              </PopoverContent>
-            </Popover>
+            <TodoEditForm
+              titleRef={titleRef}
+              descRef={descRef}
+              dueDate={dueDate}
+              setDueDate={setDueDate}
+              handleTitle={handleTitle}
+              handleDesc={handleDesc}
+              item={item}
+            />
           </>
         ) : (
           <>
@@ -181,7 +141,7 @@ export default function ({ item, setTodoList }: TodoCardProps) {
             <CardDescription className="mb-2">
               {item.description}
             </CardDescription>
-            <CardDescription className="text-zinc-900 font-semibold text-xs">
+            <CardDescription className="text-zinc-900 dark:text-white font-semibold text-xs">
               {format(item.due, "PPP")}
             </CardDescription>
           </>
@@ -191,21 +151,21 @@ export default function ({ item, setTodoList }: TodoCardProps) {
             <>
               {titleHasValue && descHasValue && dueDate ? (
                 <Button
-                  onClick={() => handleSave()}
+                  onClick={handleSave}
                   size="sm"
                   variant="outline"
                   className="cursor-pointer text-[12px]"
                 >
-                  <SaveIcon></SaveIcon> Save
+                  <SaveIcon /> Save
                 </Button>
               ) : (
                 <Button
-                  onClick={() => startEditing()}
+                  onClick={handleCancel}
                   size="sm"
                   variant="outline"
                   className="cursor-pointer text-[12px]"
                 >
-                  <XIcon></XIcon> Cancel
+                  <XIcon /> Cancel
                 </Button>
               )}
             </>
@@ -216,44 +176,17 @@ export default function ({ item, setTodoList }: TodoCardProps) {
               variant="outline"
               className="cursor-pointer text-[12px]"
             >
-              <Edit2Icon></Edit2Icon> Edit
+              <Edit2Icon /> Edit
             </Button>
           )}
-           <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-            size="sm"
-            variant="outline"
-            className="cursor-pointer text-[12px]"
-          >
-            <Edit2Icon></Edit2Icon> Change Status
-          </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-40" align="start">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => changeStatus(1)}>
-            todo
-            <DropdownMenuShortcut><TimerIcon></TimerIcon></DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => changeStatus(2)}>
-            progress
-            <DropdownMenuShortcut><Loader2Icon/></DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => changeStatus(3)}>
-            done
-            <DropdownMenuShortcut><Check/></DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <StatusDropdown changeStatus={changeStatus} />
           <Button
             size="sm"
             variant="destructive"
             className="cursor-pointer text-[12px]"
             onClick={() => deleteTodo()}
           >
-            <Trash2Icon></Trash2Icon> Delete
+            <Trash2Icon /> Delete
           </Button>
         </div>
       </CardContent>

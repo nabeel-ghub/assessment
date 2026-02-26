@@ -1,20 +1,11 @@
+"use client"
 import { useState, useRef, useEffect } from "react";
 import { Todo } from "../types";
-import { format } from "date-fns";
-
-//shadcn components
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { PlusIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-//lucide icons
-import { ChevronDownIcon } from "lucide-react";
+import DatePickerPopover from "./DatePickerPopover";
 
 type TodoCardProps = {
   setTodoList: React.Dispatch<React.SetStateAction<Todo[]>>;
@@ -97,27 +88,7 @@ export default function AddToDo({ setTodoList }: TodoCardProps) {
             data-require={requireDesc}
             className="data-[require=true]:placeholder:text-red-700 data-[require=true]:border-solid data-[require=true]:border-2px data-[require=true]:border-red-700 mb-2"
           ></Input>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                data-empty={!dueDate}
-                data-require={requireDate}
-                className="data-[empty=true]:text-muted-foreground data-[require=true]:text-red-700 data-[require=true]:border-solid data-[require=true]:border-2px data-[require=true]:border-red-700 w-[212px] justify-between text-left font-normal cursor-pointer"
-              >
-                {dueDate ? format(dueDate, "PPP") : <span>Due date</span>}
-                <ChevronDownIcon />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={dueDate}
-                onSelect={setDueDate}
-                defaultMonth={dueDate}
-              />
-            </PopoverContent>
-          </Popover>
+          <DatePickerPopover dueDate={dueDate} setDueDate={setDueDate} requireDate={requireDate} />
           <Button
             onClick={() => handleCreateTodo()}
             className="w-[100%] mt-5 cursor-pointer"
