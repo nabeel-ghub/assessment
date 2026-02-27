@@ -30,7 +30,11 @@ export default function Dashboard() {
   }, [router]);
 
   useEffect(() => {
-    let defaultTodo: Todo = {
+    const storedTodoList = localStorage.getItem("todoList");
+    if(storedTodoList) {
+      setTodoList(JSON.parse(storedTodoList));
+    } else {
+      let defaultTodo: Todo = {
       id: 0,
       title: "Simple Todo",
       description: "This is a simple Todo",
@@ -39,6 +43,7 @@ export default function Dashboard() {
     };
 
     setTodoList([defaultTodo]);
+    }
   }, []);
 
   useEffect(() => {
@@ -47,6 +52,7 @@ export default function Dashboard() {
       stringArray = [...stringArray, t.title];
     });
     setTodoListTitles(stringArray);
+    localStorage.setItem("todoList", JSON.stringify(todoList));
   }, [todoList]);
 
     const startIndex = ((paginationCurrent - 1) * itemsPerPage);
