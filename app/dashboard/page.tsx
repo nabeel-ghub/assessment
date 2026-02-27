@@ -32,7 +32,11 @@ export default function Dashboard() {
   useEffect(() => {
     const storedTodoList = localStorage.getItem("todoList");
     if(storedTodoList) {
-      setTodoList(JSON.parse(storedTodoList));
+    const parsedList = JSON.parse(storedTodoList).map((todo: Todo) => ({
+      ...todo,
+      due: new Date(todo.due),
+    }));
+    setTodoList(parsedList);
     } else {
       let defaultTodo: Todo = {
       id: 0,
