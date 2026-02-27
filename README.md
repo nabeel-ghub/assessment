@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #Todo Dashboard
 =======
 # 📝 Todo Dashboard
@@ -104,4 +103,3 @@ Instead of relying only on text, I used a "Visual-First" approach for task manag
 
 ## 📄 License
 This project is for assessment purposes.
->>>>>>> f6cefd63996d0a05a535e584c909d3149f07221f
