@@ -48,7 +48,10 @@ export default function AddToDo({ setTodoList }: TodoCardProps) {
         due: dueDate,
         status: "todo",
       };
-      setTodoList((prev) => [...prev, {...newItem, id: prev.length + 1}]);
+      setTodoList((prev) => {
+        if(prev.length > 30) return prev
+        return [...prev, {...newItem, id: prev.length + 1}]
+      });
       setTodoList(prev => prev.sort(
       (a, b) => b.due.getTime() - a.due.getTime(),
        ));
