@@ -39,7 +39,7 @@ export default function Login() {
         <ThemeToggle />
         <Card className="w-[85vw] md:w-md xl:scale-[1.3] dark:bg-zinc-800 bg-white">
       <CardHeader>
-        <CardTitle>Login to your ToDo account</CardTitle>
+        <CardTitle>Login to your ToDo Dashboard</CardTitle>
         <CardDescription>
           Enter your email below to login to your account
         </CardDescription>
