@@ -49,7 +49,7 @@ Fully responsive stacked layout optimized for mobile viewports using Tailwind's 
 Instead of writing long, repetitive classes, I implemented professional Tailwind strategies:
 <ul>
   <li><b>Dynamic Data Attributes:</b> Used <code>data-attributes</code> to handle UI states (e.g., <code>data-[status=done]:opacity-50)</code>. This keeps the JSX clean and the logic separated from the styles.</li>
-  <li><b>Custom Scrollbars & Masks:</b> Applied Tailwind utilities to create a "fade-out" effect on the scrollable list using <code>mask-image</code></li>
+  <li><b>Masks:</b> Applied Tailwind utilities to create a "fade-out" effect on the scrollable list using <code>mask-image</code></li>
   <li><b>Dark Mode Strategy:</b> Fully implemented using the <code>dark:</code> variant, ensuring a seamless transition between light and dark themes.</li>
 </ul>
 
