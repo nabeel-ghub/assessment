@@ -1,4 +1,3 @@
-=======
 # 📝 Todo Dashboard
 
 A task management system built with [Next.js 16](https://nextjs.org/blog/next-16) (Turbopack), TypeScript, TailwindCSS, and Shadcn UI. This project was developed as a technical assessment to demonstrate proficiency in modern React patterns, state management, and responsive UI design.
