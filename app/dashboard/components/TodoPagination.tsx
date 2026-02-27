@@ -23,8 +23,6 @@ export function TodoPagination({
   itemsPerPage,
   paginationCurrent,
   setPaginationCurrent,
-  paginationStart,
-  paginationEnd,
 }: TodoPaginationProps) {
   const numberOfPages = Math.ceil(todoList.length / itemsPerPage);
   
@@ -38,7 +36,7 @@ export function TodoPagination({
   if (numberOfPages <= 1) return null;
 
   return (
-    <Pagination>
+    <Pagination className="text-white">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious 
@@ -53,6 +51,7 @@ export function TodoPagination({
               href="#"
               isActive={paginationCurrent === page}
               onClick={(e) => handlePageChange(e, page)}
+              className={paginationCurrent === page? "text-black dark:text-white" : ""}
             >
               {page}
             </PaginationLink>
