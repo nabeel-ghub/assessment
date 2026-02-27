@@ -30,7 +30,7 @@ export default function Dashboard() {
   }, [router]);
 
   useEffect(() => {
-    const storedTodoList = localStorage.getItem("todoList");
+    const storedTodoList = localStorage.getItem("storedList");
     if(storedTodoList) {
     const parsedList = JSON.parse(storedTodoList).map((todo: Todo) => ({
       ...todo,
@@ -56,7 +56,7 @@ export default function Dashboard() {
       stringArray = [...stringArray, t.title];
     });
     setTodoListTitles(stringArray);
-    localStorage.setItem("todoList", JSON.stringify(todoList));
+    localStorage.setItem("storedList", JSON.stringify(todoList));
   }, [todoList]);
 
     const startIndex = ((paginationCurrent - 1) * itemsPerPage);
