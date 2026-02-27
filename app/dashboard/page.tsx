@@ -63,7 +63,7 @@ export default function Dashboard() {
     const endIndex = (startIndex + itemsPerPage);
 
   const displayList = [...todoList]
-    .sort((a, b) => b.due.getTime() - a.due.getTime())
+    .sort((a, b) => a.due.getTime() - b.due.getTime())
     .filter((t) => t.title.toLowerCase().includes(searchValue.toLowerCase()))
     .filter((t) => t.status.includes(filterStatus))
     .slice(startIndex, endIndex);
